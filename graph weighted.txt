@@ -1,0 +1,46 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+template <typename T>
+class Graph{
+    int vertex;
+    // weighted graph
+    map<T, list<pair<T, int>> > citiesRoutes;
+    
+    public:
+    Graph(){}
+    
+    void addCityRoute(T city1, T city2,int weight, bool twoWay= true){
+        citiesRoutes[city1].push_back(make_pair(city2, weight));
+        if(twoWay){
+            citiesRoutes[city2].push_back(make_pair(city1, weight));
+        }
+    }
+    
+    void citiesRoadMap(){
+        for(auto it=citiesRoutes.begin(); it!=citiesRoutes.end(); it++){
+            string key= it->first;
+            cout<<key<<" ->";
+            for(auto cityWeight: it->second){
+                cout<<"{"<<cityWeight.first<<","<<cityWeight.second<<"}"<<", ";
+            }
+            cout<<"\n";
+        }
+    }
+};
+
+int main()
+{
+    Graph<string> g;
+    
+    g.addCityRoute("amritsar", "delhi", 10);
+    g.addCityRoute("amritsar", "jaipur", 20);
+    g.addCityRoute("delhi", "siachen", 30);
+    g.addCityRoute("delhi", "bangluru", 40);
+    g.addCityRoute("delhi", "agra", 50);
+    g.addCityRoute("amritsar", "siachen", 60);
+    
+    g.citiesRoadMap();
+
+    return 0;
+}

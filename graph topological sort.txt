@@ -1,0 +1,64 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class Graph{
+    int vertex;
+    unordered_map<int, vector<int>> adjList;
+    unordered_map<int, int> inDegreeOfNodes;
+    
+    public:
+    Graph(int v){
+        vertex= v;
+    }
+    
+    void addEdge(int u, int v){
+        adjList[u].push_back(v);
+        
+        if(inDegreeOfNodes[u]==0){}
+        inDegreeOfNodes[v]++;
+    }
+    
+    vector<int> topologicalSort(){
+        vector<int> sortedNodes;
+        vector<bool> visited(vertex, false);
+        queue<int> zeroInDegreeQueue;
+        
+        for(auto node : inDegreeOfNodes){
+            if(node.second== 0){
+                zeroInDegreeQueue.push(node.first);
+            }
+        }
+        
+        while(! zeroInDegreeQueue.empty()){
+            int node= zeroInDegreeQueue.front();
+            
+            for(auto connectedNode : adjList[node]){
+                inDegreeOfNodes[connectedNode]--;
+                
+                if(inDegreeOfNodes[connectedNode]== 0){
+                    zeroInDegreeQueue.push(connectedNode);
+                }
+            }
+            sortedNodes.push_back(node);
+            zeroInDegreeQueue.pop();
+        }
+        return sortedNodes;
+    }
+};
+
+int main(){
+    //Assuming that the graph has no cycles if t has cycle can be sorted topologically
+    Graph g(4);
+    g.addEdge(0,1);
+    g.addEdge(0,3);
+    g.addEdge(1,3);
+    g.addEdge(2,3);
+    
+    vector<int> ans;
+    ans= g.topologicalSort();
+    for(int node: ans){
+        cout<<node<<" ";
+    }
+    
+    return 0;
+}

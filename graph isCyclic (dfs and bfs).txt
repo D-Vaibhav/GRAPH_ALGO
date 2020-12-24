@@ -1,0 +1,125 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Graph{
+    int v;
+    map<int, vector<int>> adjList;
+    map<int, int> inDegreeOfNodes;
+    
+    public:
+    Graph(int x){
+        v=x;
+    }
+    
+    void addEdge(int u, int v){
+        adjList[u].push_back(v);
+        
+        // calculating inDegree
+        inDegreeOfNodes[v]++;
+        if(inDegreeOfNodes[u]== 0){}    //will act to assign
+    }
+    
+    void printAdjList(){
+        for(auto vertex: adjList){
+            cout<<vertex.first<<" -> ";
+            for(auto edge: vertex.second){
+                cout<<edge<<" ";
+            }
+            cout<<endl;
+        }
+    }
+    
+    bool inDegreeCyclicCheck(){
+        bool isCycle= true;
+        int nodeQueuedCounter= 0;
+        queue<int> noCycleParticipationQueue;
+        
+        for(auto node : inDegreeOfNodes){
+            if(node.second==0){
+                noCycleParticipationQueue.push(node.first);
+            }
+        }
+        
+        while(! noCycleParticipationQueue.empty() ){
+            int node= noCycleParticipationQueue.front();
+            
+            for(auto node: adjList[node]){
+                inDegreeOfNodes[node]--;
+                if(inDegreeOfNodes[node]== 0){
+                    noCycleParticipationQueue.push(node);
+                }
+            }
+            noCycleParticipationQueue.pop();
+            nodeQueuedCounter++;
+        }
+        if(nodeQueuedCounter == v){
+            isCycle= false;
+        }
+        return isCycle;
+    }
+    
+    
+    int checkCyclicUsingDfs(int srcNode){
+        stack<int> s;
+        bool *visited= new bool[v+1]{false};
+        int isCycle= -1;
+        int inStack[v+1]={0};
+        
+        s.push(srcNode);
+        visited[srcNode]= true;
+        inStack[srcNode]= 1;
+        
+        while(!s.empty()){
+            int allVisited= 1;
+            for(int node: adjList[s.top()]){
+                // if node is visited and present in the stack and again appeared as adjacent node
+               if(visited[node] && inStack[node]==1){
+                    isCycle= 1;
+                    break;
+                }
+                if(!visited[node]){
+                    s.push(node);
+                    visited[node]= true;
+                    inStack[node]= 1;
+                    allVisited= 0;
+                    break;
+                }
+            }
+            if(allVisited) {
+                inStack[s.top()]= 0;
+                s.pop();
+            }
+            if(isCycle==1){
+                break;
+            }
+        }
+        return isCycle;
+    }
+};
+
+int main()
+{
+    Graph g(4);
+    g.addEdge(0, 1);
+    g.addEdge(2, 3);
+    g.addEdge(3, 2);
+    
+    g.printAdjList();
+    
+    int result= g.checkCyclicUsingDfs(0);
+    if(result==-1){
+        cout<<"\nGraph is Acyclic";
+    }
+    else{
+        cout<<"\nGraph is Cyclic";
+    }
+    
+    if(g.inDegreeCyclicCheck()){
+        cout<<"\nGraph is Cyclic";
+    }
+    else{
+        cout<<"\nGraph is Acyclic";
+    }
+    
+    return 0;
+}

@@ -1,0 +1,69 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Graph{
+    int v;
+    map<int, vector<int>> adjList;
+    
+    public:
+    Graph(int x){
+        v=x;
+    }
+    
+    void addEdge(int u, int v){
+        adjList[u].push_back(v);
+        // if bidirectional 
+        // adjList[v].push_back(u);
+    }
+    
+    void printAdjList(){
+        for(auto vertex: adjList){
+            cout<<vertex.first<<" -> ";
+            for(auto edge: vertex.second){
+                cout<<edge<<" ";
+            }
+            cout<<endl;
+        }
+    }
+    
+    void dfs(int srcNode){
+        stack<int> s;
+        bool *visited= new bool[v+1]{false};
+        
+        cout<<"\nthe dfs from starting node "<<srcNode<<" is:\n"<<srcNode<<" ";
+        s.push(srcNode);
+        visited[srcNode]= true;
+        
+        while(!s.empty()){
+            int allVisited= 1;
+            
+            for(int node: adjList[s.top()]){
+                if(!visited[node]){
+                    cout<<node<<" ";
+                    s.push(node);
+                    visited[node]= true;
+                    allVisited= 0;
+                    break;
+                }
+            }
+            if(allVisited)  s.pop();
+        }
+    }
+};
+
+int main()
+{
+    Graph g(4);
+    g.addEdge(0, 1);
+    g.addEdge(0, 2);
+    g.addEdge(1, 2);
+    g.addEdge(2, 0);
+    g.addEdge(2, 3);
+    g.addEdge(3, 3);
+    
+    g.printAdjList();
+    
+    g.dfs(1);
+
+    return 0;
+}

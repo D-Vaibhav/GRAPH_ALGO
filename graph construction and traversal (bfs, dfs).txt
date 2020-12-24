@@ -1,0 +1,95 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class Graph{
+    int vertex;
+    map<int, list<int>> adjList;
+    
+    public:
+    Graph(int v){
+        vertex= v;
+    }
+    
+    void addEdge(int u, int v, bool biDirected= true){
+        adjList[u].push_back(v);
+        if(biDirected){
+            adjList[v].push_back(u);
+        }
+    }
+    
+    void printAdjList(){
+        for(auto vertex : adjList){
+            cout<<vertex.first<<"->";
+            for(auto edgeBetween : vertex.second){
+                cout<<edgeBetween<<", ";
+            }
+            cout<<"\n";
+        }
+    }
+    
+    void bfs(int startingNode){
+        queue<int> q;
+        // bool *visited= new bool[vertex+1]{false};
+        vector<bool> visited(vertex+ 1, false);
+        q.push(startingNode);
+        visited[startingNode]= true;
+        
+        while(!q.empty()){
+            for(auto node: adjList[q.front()]){
+                if(!visited[node]){
+                    q.push(node);
+                    visited[node]= true;
+                }
+            }
+            cout<<q.front()<<", ";
+            q.pop();
+        }
+    }
+    
+    void dfs(int startingNode){
+        stack<int> s;
+        bool *visited= new bool[vertex+ 1]{false};
+        // vector<bool> visited(vertex+ 1, false);
+        s.push(startingNode);
+        visited[startingNode]= true;
+        cout<<startingNode;
+        
+        while(!s.empty()){
+            int allVisited= 1;
+            for(auto node: adjList[s.top()]){
+                if(!visited[node]){
+                    s.push(node);
+                    visited[node]= true;
+                    cout<<", "<<node;
+                    allVisited= 0;
+                    break;
+                }
+            }
+            if(allVisited){
+                s.pop();
+            }
+        }
+    }
+    
+};
+
+int main(){
+    Graph g(6);
+    g.addEdge(0,1);
+    g.addEdge(0,2);
+    g.addEdge(0,3);
+    g.addEdge(2,3);
+    g.addEdge(2,4);
+    g.addEdge(3,5);
+    
+    g.printAdjList();
+    cout<<endl;
+    
+    g.bfs(0);
+    cout<<endl;
+    
+    g.dfs(0);
+    cout<<endl;
+    
+    return 0;
+}
